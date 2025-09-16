@@ -1,39 +1,33 @@
-import { useState } from "react";
-import axios from "axios";
+import { useState, useEffect} from "react";
+import api from "./lib/api";
+import { UserContext } from "./Hooks/userContext";
+import Auth from "./pages/Auth";
+import Dashboard from "./pages/Dashboard"
+import Loader from "./components/Loader";
 
-function App() {
-  const [file, setFile] = useState(null);
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    if (!file) {
-      alert("Please select a file first");
-      return;
+export default function App() {
+  const [user, setUser] = useState<boolean | null>(null);
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        await api.post("/api/auth/refresh");
+        setUser(true);
+      } catch {
+        setUser(false);
+      }
     }
+    checkAuth();
+  }, []);
 
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const res = await axios.post("http://localhost:8000/upload", formData);
-      console.log("Upload success:", res.data);
-      alert("File uploaded: " + res.data.file);
-    } catch (err) {
-      console.error(err);
-      alert("Upload failed");
-    }
-  }
+  if (user === null) return <Loader />;
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="file"
-        name="file"
-        onChange={(e) => setFile(e.target.files[0])}
-      />
-      <button type="submit">Upload</button>
-    </form>
-  );
+  <UserContext.Provider value={{ user, setUser }}>
+      {user ? (
+        <Dashboard />
+      ) : (
+        <Auth />
+      )}
+  </UserContext.Provider>
+  )
 }
-
-export default App;
