@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import AuthForm from "../auth/AuthForm";
-import { UserContext, type UserContextType } from "../Hooks/userContext";
+import { UserContext, type UserContextType } from "../hooks/userContext";
 
 export default function AuthPage() {
   const { setUser }: UserContextType = useContext(UserContext)!;
