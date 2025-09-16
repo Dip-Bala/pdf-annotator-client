@@ -1,6 +1,6 @@
 import { useState, useEffect} from "react";
 import api from "./lib/api";
-import { UserContext } from "./Hooks/userContext";
+import { UserContext } from "./hooks/userContext";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard"
 import Loader from "./components/Loader";
